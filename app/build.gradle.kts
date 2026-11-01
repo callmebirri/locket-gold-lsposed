@@ -15,6 +15,10 @@ android {
         versionName = "1.0.0"
     }
 
+    base {
+        archivesName.set("${rootProject.name}-v${defaultConfig.versionName}")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false

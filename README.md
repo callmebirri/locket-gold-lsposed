@@ -43,14 +43,14 @@ Build using the included Gradle Wrapper:
 ```
 
 Generated APK output locations:
-- Release: `app/build/outputs/apk/release/app-release.apk`
-- Debug: `app/build/outputs/apk/debug/app-debug.apk`
+- Release: `app/build/outputs/apk/release/LocketGold-v1.0.0-release.apk`
+- Debug: `app/build/outputs/apk/debug/LocketGold-v1.0.0-debug.apk`
 
 ## 4. Installation and Activation
 
 1. Install the generated APK on the target device:
    ```bash
-   adb install app/build/outputs/apk/release/app-release.apk
+   adb install app/build/outputs/apk/release/LocketGold-v1.0.0-release.apk
    ```
 2. Open LSPosed Manager and enable the **Locket Gold** module.
 3. Verify that **Locket** (`com.locket.Locket`) is selected in the module scope.
