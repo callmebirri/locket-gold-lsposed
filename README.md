@@ -2,7 +2,7 @@
 
 An Xposed / LSPosed module targeting the Locket application (`com.locket.Locket`), designed for client-side runtime analysis and instrumentation.
 
-## 1. Technical Architecture
+## Technical Architecture
 
 The module operates across three distinct execution layers within the target process:
 
@@ -20,7 +20,7 @@ The module operates across three distinct execution layers within the target pro
   - Firebase Remote Config: Overrides target configuration keys in process memory.
   - RevenueCat and Firestore: Normalizes entitlement and subscription state fields within the local session.
 
-## 2. Requirements
+## Requirements
 
 - **Runtime Environment**:
   - Android 8.0 (API Level 26) or higher with root access.
@@ -30,7 +30,7 @@ The module operates across three distinct execution layers within the target pro
   - Android SDK with Platform SDK 34.
   - Bundled Gradle Wrapper.
 
-## 3. Build Instructions
+## Build Instructions
 
 Build using the included Gradle Wrapper:
 
@@ -46,7 +46,7 @@ Generated APK output locations:
 - Release: `app/build/outputs/apk/release/LocketGold-v1.0.0-release.apk`
 - Debug: `app/build/outputs/apk/debug/LocketGold-v1.0.0-debug.apk`
 
-## 4. Installation and Activation
+## Installation and Activation
 
 1. Install the generated APK on the target device:
    ```bash
@@ -63,6 +63,31 @@ Generated APK output locations:
    adb logcat -s LocketGold
    ```
 
-## 5. License
+## License
 
-This project is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). Any commercial use or use intended for monetary compensation is strictly prohibited.
+This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
+
+You are free to use, modify, and distribute this software for **non-commercial purposes** only. Commercial use is strictly prohibited without explicit permission from the author.
+
+See the [LICENSE](LICENSE) file for the full license text.
+
+## Author & Credits
+
+**Author:** birri (callmebirri)
+**GitHub:** [github.com/callmebirri](https://github.com/callmebirri)
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome!
+Feel free to check the [issues page](https://github.com/callmebirri/BirriMonitor/issues).
+
+## Disclaimer
+
+**This software is provided "as is", without any warranty.** Use at your own risk. The author is not responsible for any damage or data loss caused by this tool.
+
+---
+<div align="center">
+
+Developed with ❤️ by **birri**
+
+</div>
