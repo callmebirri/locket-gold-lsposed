@@ -1,0 +1,47 @@
+You are an expert Android and Xposed/LSPosed developer. Rebuild a complete, compilable Android studio / Gradle project that builds into a working APK from the provided `HookMain.java` source file, migrating the entire codebase to idiomatic Kotlin.
+
+### Objective
+Convert the single `HookMain.java` Xposed module into a full, self-contained Gradle project using Kotlin DSL (`build.gradle.kts`) and Kotlin (`HookMain.kt`), configured to compile directly into an installable LSPosed module APK.
+
+### Project Requirements & Structure
+Generate all required files for a standalone Gradle build, including:
+1. `settings.gradle.kts` — Project name (`LocketGold`), pluginManagement, and dependencyResolutionManagement with `google()`, `mavenCentral()`, and `https://api.xposed.info/`.
+2. `build.gradle.kts` (root) — Android Application and Kotlin Android plugin declarations.
+3. `gradle.properties` — `android.useAndroidX=true`, Kotlin code style, and JVM args.
+4. `app/build.gradle.kts` —
+   - `namespace = "com.locket.gold"`
+   - `compileSdk = 34`, `minSdk = 26`, `targetSdk = 34`
+   - `compileOptions` and `kotlinOptions` targeting Java 17.
+   - Dependencies: `compileOnly("de.robv.android.xposed:api:82")` and standard Kotlin stdlib.
+   - Packaging options excluding unnecessary metadata if needed.
+5. `app/src/main/AndroidManifest.xml` —
+   - Package/namespace `com.locket.gold`, no launcher activity needed (headless Xposed module).
+   - Required LSPosed/Xposed metadata tags:
+     - `xposedmodule` = `true`
+     - `xposeddescription` = `"Unlocks Locket Gold client-side"`
+     - `xposedminversion` = `82`
+     - `xposedscope` referencing `@array/xposed_scope`
+6. `app/src/main/res/values/arrays.xml` —
+   - `string-array` named `xposed_scope` containing `<item>com.locket.Locket</item>`.
+7. `app/src/main/assets/xposed_init` —
+   - Plain text file containing exact entry class name: `com.locket.gold.HookMain`
+8. `app/src/main/java/com/locket/gold/HookMain.kt` —
+   - Full, 1:1 behavioral port of `HookMain.java` to clean, idiomatic Kotlin.
+
+### Kotlin Porting Constraints (`HookMain.kt`)
+- Preserve the exact package name `com.locket.gold` and class name `HookMain : IXposedHookLoadPackage`.
+- Keep `HookMain` instantiable via a public no-arg constructor so `xposed_init` can instantiate it normally (place static state and helper functions inside a `companion object` or top-level/private methods as appropriate, ensuring thread safety with `@Volatile` and `@Synchronized` matching the Java `volatile` and `synchronized` keywords).
+- Preserve all 3 unlocking layers and every single hook and byte-patching mechanism without omissions or simplifications:
+  - Hermes v96 structural bytecode parser (`structuralPatch`) with exact little-endian `ByteBuffer` offsets, bitmasks (`0x1FFFF`, `0x1FFFFFF`, `0x7FFF`, `0x7FFFFF`, etc.), `align()`, `regionEqualsAscii()`, `doesUserHaveGoldBadge` (`0x78`, `0x5C` opcodes) and `PaymentsProvider` (`0x0B` Not/Not sequence replacement).
+  - Fallback per-version byte-context fingerprints (`1.234.x`, `1.236.0`, `1.238.x`), `contextMatchesOnce`, `patchUnique`, MD5 cache naming (`locket_gold_bundle_v5_<md5>.bin`), SHA-1 20-byte Hermes footer recalculation, and old bundle cleanup.
+  - Bundle loading hooks (`JSBundleLoader$Companion.createAssetLoader`, `JSBundleLoader.createAssetLoader`, and superclass chain walk for `getJSBundleFile` + `Application.onCreate` fallback).
+  - `SourceCodeModule` hook (`getTypedExportedConstants` and `getConstants`) rewriting `scriptURL` back to `assets://index.android.bundle`.
+  - Dynamic `ClassLoader.loadClass` and `dalvik.system.BaseDexClassLoader.loadClass` hooks filtering the target package prefixes and routing to `hookSingleClass`.
+  - User JSON (`JSONObject` / `JSONArray`) and Firestore `Map` mutation (`badge = "locket_gold"`, `subscription_entitlement = "locket_gold"`, `subscription_store = "play_store"`, `is_gold = true`).
+  - Firebase Remote Config hooks (`ReactNativeFirebaseConfigModule.resultWithConstants`, `getConstants`, and `FirebaseRemoteConfig.getBoolean` / `getString` with `GOLD_OVERRIDE_KEY` and `VIDEO_CONFIG_JSON`).
+  - Firestore `getData()`, RevenueCat `EntitlementInfo` (`isActive`, `getWillRenew`), `MMKV.decodeString()`, and `NetworkingModule.onDataReceived()` hooks.
+- Use descriptive variable and function names consistent with the original source. Do not leave any `TODO`, stubbed methods, or truncated arrays.
+
+### Deliverable Format & Verification
+- Provide the complete content of every file in its own fenced code block with the file path clearly labeled above each block.
+- Include the exact CLI command (`./gradlew assembleDebug` or `./gradlew assembleRelease`) to build the APK and state where the output APK is generated.
